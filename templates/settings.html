@@ -1,0 +1,92 @@
+{% extends 'index.html' %}
+
+
+{%block main_content%}
+<h3>Settings</h3>
+{%if not bucket_exists%}
+<div id="bucket-warning">
+	It looks like you have not set up a Google Cloud Storage bucket yet. MyLife will not work correctly until you do,
+	image uploads, import/export and various other things need Google Cloud Storage to work. Please follow the instructions
+	in <a href="http://einaregilsson.com/mylife-a-single-user-ohlife-alternative/#setup-bucket">this blog post</a> to set up 
+	your bucket! If you come back to this page after setting up your bucket then you should no longer see this warning. You should
+	also try writing a post and uploading an image to make sure the bucket works like it should.
+</div>
+{%endif%}
+
+<div id="user-settings">
+	<form method="POST" action="/settings">
+
+		<label for="email-hour">What time should your daily email arrive?</label>
+		<label for="timezone" id="tz-label">Time</label>
+		<select name="email-hour">
+			{%for hour in range(0, 24)%}
+				<option value="{{hour}}"{%if email_hour==hour%} selected="selected"{%endif%}>{{'%02d:00' % hour}}</option>
+			{%endfor%}
+		</select>
+		<select name="timezone">
+		{% for value, text, _ in timezones%}
+			<option value="{{value}}"{%if timezone==value%} selected="selected"{%endif%}>{{text}}</option>
+		{% endfor %}
+		</select>
+
+		<label for="email-address">Which email address do you want to use?</label>
+		<input type="text" name="email-address" id="email-address" value="{{email_address}}" />
+
+		<label for="include-old-entry">Should the email include an old post?</label>
+		<input type="radio" name="include-old-entry" value="yes"{%if include_old_post_in_entry%} checked="checked"{%endif%}/ ><span class="radio">Yes</span>
+		<input type="radio" name="include-old-entry" value="no"{%if not include_old_post_in_entry%} checked="checked"{%endif%} /><span class="radio">No</span>
+
+		<label for="dropbox-access-token">Dropbox Access Token</label>
+		<input type="password" name="dropbox-access-token" id="dropbox-accesss-token" value="{{dropbox_access_token}}" />
+		<p id="dropbox-explanation">
+			If you add a Dropbox Access Token your entries and photos will automatically be backed up to Dropbox every night.
+			You must <a target="_blank" href="http://einaregilsson.com/mylife-backup-to-dropbox/">set up your own Dropbox app to do this.</a>
+		</p>
+		<div class="button-container">
+			<button type="submit" class="save">Save settings</button>
+		</div>
+		{%if saved%}
+		<div class="save-message">Your settings were saved.</div>
+		{%endif%}
+	</form>
+</div>
+
+<div id="import">
+	<h3>Import OhLife entries</h3>
+
+	<form id="import-form"><input id="zip" name="zip" class="input-file" type="file"></form>
+	<div class="button-container">
+		<button id="upload" name="upload" data-upload-url="{{upload_url}}" disabled="disabled">Upload zip file</button>
+	</div>
+	<p id="import-progress" class="progress">No file chosen yet</p>
+</div>
+<div id="export">
+	<h3>Export MyLife entries</h3>
+	<div class="button-container">
+		<button id="export-entries" name="export">Export all entries</button>
+	</div>
+	<p id="export-progress" class="progress"></p>
+</div>
+
+{%if can_migrate_images %}
+<div id="migrate-to-gcs">
+	<h3>Migrate images to Google Cloud Storage</h3>
+	<p>You appear to have {{images_in_blobstore}} images that are only stored in the Blobstore.  Press the button below to import these images into Google Cloud Storage, where all images will be kept from now on. Please read through the <a href="http://einaregilsson.com/mylife-google-cloud-storage-support/">blog post about Google Cloud Storage support</a> before doing this and make sure your storage bucket is working, once you've done that you can migrate your images.
+
+	<div class="button-container">
+		<button id="migrate-to-gcs" name="migrate-to-gcs">Migrate images to Google Cloud Storage</button>
+	</div>
+	<p id="migrate-progress" class="progress"></p>
+</div>
+{%endif%}
+<div id="version">MyLife version {{version}}</div>
+
+{%endblock%}
+
+{%block stylesheets%}
+<link rel="stylesheet" href="/css/settings.css">
+{%endblock%}
+
+{%block scripts%}
+	<script src="/js/settings.js"></script>
+{%endblock%}

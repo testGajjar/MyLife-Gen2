@@ -1,0 +1,54 @@
+{% if post %}
+	<div class="find-post">
+		{% if is_oldest %}
+		<span class="disabled">Older</span>
+		{%else%}
+		<a id="prev" href="#prev" data-url="/api/{{post.date_string()}}/prev">Older</a>
+		{%endif%}
+		| <a id="random" href="#random" data-url="/api/{{post.date_string()}}/random">Random</a> |
+		{% if is_newest %}
+		<span class="disabled">Newer</span>
+		{% else %}
+		<a id="next" href="#next" data-url="/api/{{post.date_string()}}/next">Newer</a>
+		{%endif%}
+	</div>
+	<div class="post">
+		<h3><a title="Edit this post" href="/edit/{{post.date_string()}}">{{post.date.strftime('%B')}} {{post.date.day}}, {{post.date.year}}</a></h3>
+		<h4>{{post.date.strftime('%A')}}</h4>
+
+		{%if post.images %}
+			{%for img in post.images%}
+				{%if not img in post.text%}
+				<div class="image">
+					<a href="/image/{{img}}?fullsize=1"><img src="/image/{{img}}"/></a>
+				</div>
+				{%endif%}
+			{%endfor%}
+		{%endif%}
+		
+		<div>{{post.text}}</div>
+	</div>
+{%else%}
+	{%if first_time%}
+	<div class="post">
+		<p>
+			Hi there. 
+		</p>
+		<p>
+			Welcome to MyLife. We have just sent you an email to {{email}}. You can try the system out right away by replying to that email and then looking at the <a href="/past">archive</a> to see that your reply arrived and was parsed correctly. 
+			In the future an email will be sent once a day and will include an old email if possible. You can configure when you get
+			your daily email and which email address to use on the <a href="/settings">settings</a> page. 
+		</p>
+	</div>
+	{%else%}
+	<div class="post">
+		<p>
+			Hi there. 
+		</p>
+		<p>
+			Looks like you don't have any posts yet. Maybe you should <a href="/write">write one</a>,
+			or <a href="/settings">configure your daily email?
+		</p>
+	</div>
+	{%endif%}
+{%endif%}
