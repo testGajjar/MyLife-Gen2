@@ -1,0 +1,17 @@
+{% extends 'index.html' %} {%block main_content%}
+{%if prev %} Â« {%else%} Â« {% endif %}
+		{% for val, descr, selected in archive%}
+			{{descr}}
+		{% endfor %}
+	{%if next %} Â» {%else%} Â» {% endif %}
+(Click on date headers to edit posts) {% if not posts%}
+There are no posts for {{month}}. Maybe you should write one?
+{% else %} {% for post in posts%}
+{{post.date.strftime('%B')}} {{post.date.day}}, {{post.date.year}}
+{{post.date.strftime('%A')}}
+{%if post.images %} {%for img in post.images%} {%if not img in post.text%}
+￼
+{%endif%} {%endfor%} {%endif%}
+{{post.text}}
+
+{%endfor%} {%endif%} {%endblock%} {%block scripts%} {%endblock%} {%block stylesheets%} {%endblock%}
