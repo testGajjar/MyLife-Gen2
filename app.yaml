@@ -1,0 +1,17 @@
+app_engine_apis: true
+builtins:
+-   remote_api: true
+handlers:
+-   secure: always
+    static_dir: css
+    url: /css
+-   secure: always
+    static_dir: js
+    url: /js
+-   secure: always
+    static_files: robots.txt
+    upload: robots\.txt
+    url: /robots\.txt
+inbound_services:
+- mail
+runtime: python39

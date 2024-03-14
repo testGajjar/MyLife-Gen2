@@ -1,0 +1,8 @@
+cron:
+- description: Send daily post
+  url: /sendmail
+  schedule: every 60 minutes synchronized
+
+- description: Backup to Dropbox
+  url: /backup/dropbox
+  schedule: every day 00:00
